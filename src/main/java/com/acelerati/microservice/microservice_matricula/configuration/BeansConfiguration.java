@@ -4,7 +4,7 @@ import com.acelerati.microservice.microservice_matricula.apadaters.driven.persis
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.mappers.entity.CourseEntityMapper;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.AcademicSemesterRepository;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.CourseRepository;
-import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.service.AcademicSemesterPersistenceAdapter;
+import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.service.AcademicSemesterJpaPersistenceAdapter;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.service.CourseJpaPersistenceAdapter;
 import com.acelerati.microservice.microservice_matricula.domain.ports.api.CourseServicePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicSemesterPersistencePort;
@@ -35,7 +35,7 @@ public class BeansConfiguration {
     }
     @Bean
     public AcademicSemesterPersistencePort getAcademicSemesterPersistencePort() {
-        return new AcademicSemesterPersistenceAdapter(academicSemesterRepository, academicSemesterEntityMapper);
+        return new AcademicSemesterJpaPersistenceAdapter(academicSemesterRepository, academicSemesterEntityMapper);
     }
     @Bean
     public CourseServicePort getCourseServicePort() {

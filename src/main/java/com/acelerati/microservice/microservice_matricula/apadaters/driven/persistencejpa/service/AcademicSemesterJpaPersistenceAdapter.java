@@ -4,13 +4,12 @@ import com.acelerati.microservice.microservice_matricula.apadaters.driven.persis
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.AcademicSemesterRepository;
 import com.acelerati.microservice.microservice_matricula.domain.model.AcademicSemesterModel;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicSemesterPersistencePort;
-import net.bytebuddy.implementation.bind.annotation.This;
 
-public class AcademicSemesterPersistenceAdapter implements AcademicSemesterPersistencePort {
+public class AcademicSemesterJpaPersistenceAdapter implements AcademicSemesterPersistencePort {
     private final AcademicSemesterRepository academicSemesterRepository;
     private final AcademicSemesterEntityMapper academicSemesterEntityMapper;
 
-    public AcademicSemesterPersistenceAdapter(AcademicSemesterRepository academicSemesterRepository, AcademicSemesterEntityMapper academicSemesterEntityMapper) {
+    public AcademicSemesterJpaPersistenceAdapter(AcademicSemesterRepository academicSemesterRepository, AcademicSemesterEntityMapper academicSemesterEntityMapper) {
         this.academicSemesterRepository = academicSemesterRepository;
         this.academicSemesterEntityMapper = academicSemesterEntityMapper;
     }

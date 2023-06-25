@@ -1,6 +1,9 @@
 package com.acelerati.microservice.microservice_matricula.exceptionhandler;
 
 import com.acelerati.microservice.microservice_matricula.domain.exception.CourseUniqueGroupSemesterException;
+import com.acelerati.microservice.microservice_matricula.domain.exception.MaxTimeTablesException;
+import com.acelerati.microservice.microservice_matricula.domain.exception.ResourceNotFoundException;
+import com.acelerati.microservice.microservice_matricula.domain.exception.TimeInvalidExeption;
 import com.acelerati.microservice.microservice_matricula.exceptionhandler.response.ErrorDetails;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +31,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(),ex.getMessage(),request.getDescription(false));
 
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(MaxTimeTablesException.class)
+    public ResponseEntity<ErrorDetails> handleMaxTimeTablesException(MaxTimeTablesException ex, WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(),ex.getMessage(),request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(TimeInvalidExeption.class)
+    public ResponseEntity<ErrorDetails> handleTimeInvalidExeption(TimeInvalidExeption ex, WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(),ex.getMessage(),request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(),ex.getMessage(),request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
     @Override
