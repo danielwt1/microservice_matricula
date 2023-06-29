@@ -1,6 +1,7 @@
 package com.acelerati.microservice.microservice_matricula.domain.usecase;
 
 import com.acelerati.microservice.microservice_matricula.domain.exception.CourseUniqueGroupSemesterException;
+import com.acelerati.microservice.microservice_matricula.domain.exception.DateTimeException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.MaxTimeTablesException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.ResourceNotFoundException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.TimeInvalidExeption;
@@ -10,26 +11,39 @@ import com.acelerati.microservice.microservice_matricula.domain.model.ScheduleMo
 import com.acelerati.microservice.microservice_matricula.domain.model.enums.TypeCourseEnum;
 import com.acelerati.microservice.microservice_matricula.domain.ports.api.CourseServicePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicSemesterPersistencePort;
+import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicaServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.CoursePersistencePort;
+import com.acelerati.microservice.microservice_matricula.domain.util.DomainUtilsMethods;
 
-import java.time.Duration;
-import java.time.LocalTime;
 
 public class CourseUseCase implements CourseServicePort {
     private static final Long HOUR_MIN_TIME = 1L;
     private static final Long HOUR_MAX_TIME = 4L;
+        private static final Long WEEKS_SEMESTER_DURATION = 18L;
     private final CoursePersistencePort coursePersistencePort;
     private final AcademicSemesterPersistencePort academicSemesterPersistencePort;
+    private final AcademicaServiceFeingPort academicaServiceFeingPort;
 
-    public CourseUseCase(CoursePersistencePort coursePersistencePort, AcademicSemesterPersistencePort academicSemesterPersistencePort) {
+    public CourseUseCase(CoursePersistencePort coursePersistencePort, AcademicSemesterPersistencePort academicSemesterPersistencePort, AcademicaServiceFeingPort academicaServiceFeingPort) {
         this.coursePersistencePort = coursePersistencePort;
         this.academicSemesterPersistencePort = academicSemesterPersistencePort;
+        this.academicaServiceFeingPort = academicaServiceFeingPort;
     }
 
     @Override
     public void createCourse(CourseModel course) {
+        if(!this.academicaServiceFeingPort.existMateria(course.getIdMateria())){
+            throw new ResourceNotFoundException(String.format("La materia con id %d no existe", course.getIdMateria()));
+        }
         if(this.coursePersistencePort.existCourse(course.getGroup(),course.getIdMateria(), TypeCourseEnum.EN_CURSO.getDescription())){
             throw new CourseUniqueGroupSemesterException("Ya existe un curso con ese grupo y materia");
+        }
+        if(course.getIdAcademicSemester().getInitDate().isAfter(course.getIdAcademicSemester().getEndDate())){
+            throw new DateTimeException("La fecha inicial no puede ser mayor que la final ");
+        }
+        if(!DomainUtilsMethods.validateDates(course.getIdAcademicSemester().getInitDate(),course.getIdAcademicSemester().getEndDate(),
+                WEEKS_SEMESTER_DURATION)){
+            throw  new DateTimeException("La fecha final de la materia debe ser de 18 semanas a 20 semanas");
         }
         AcademicSemesterModel semester = this.academicSemesterPersistencePort.save(course.getIdAcademicSemester());
         course.setIdAcademicSemester(semester);
@@ -47,15 +61,12 @@ public class CourseUseCase implements CourseServicePort {
         if(scheduleModel.getHourInit().isAfter(scheduleModel.getHourEnd())){
             throw new TimeInvalidExeption("La hora inicial no  puede ser mayor o igual a la hora final");
         }
-        if(!validateHours(scheduleModel.getHourInit(), scheduleModel.getHourEnd())){
+        if(!DomainUtilsMethods.validateHours(scheduleModel.getHourInit(), scheduleModel.getHourEnd(),HOUR_MIN_TIME,HOUR_MAX_TIME)){
             throw new TimeInvalidExeption(String.format("La duracion de la clase debe ser minimo %d  y maximo de %d horas ",HOUR_MIN_TIME,HOUR_MAX_TIME));
         }
         course.getSchedules().add(scheduleModel);
         this.coursePersistencePort.addScheduleToCourse(course);
     }
-    private boolean validateHours(LocalTime init,LocalTime end){
-        //Puedo guardar la diferencia
-        Duration difference =  Duration.between(init,end);
-        return difference.toHours() >=HOUR_MIN_TIME && difference.toHours() <= HOUR_MAX_TIME;
-    }
+
+
 }
