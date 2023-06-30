@@ -8,4 +8,5 @@ public interface CourseService {
     void createCourse(CourseRequestDTO courseRequestDTO);
 
     void addSchedules(Long courseId, ScheduleRequestDTO scheduleRequestDTO);
+
 }

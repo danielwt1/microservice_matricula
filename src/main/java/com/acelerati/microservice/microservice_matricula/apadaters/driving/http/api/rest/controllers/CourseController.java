@@ -46,7 +46,20 @@ public class CourseController {
         this.courseService.createCourse(courseRequestDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
+    @Operation(summary = "Permite Agregar un horario al curso ",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Se Agrego el horario a  un curso correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Hay un error en el request de la solicitud",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class))),
+                    @ApiResponse(responseCode = "500", description = "A business logic error occurred",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class))),
+                    @ApiResponse(responseCode = "401", description = "El usario no esta authenticado, o el token esta incorrecto ",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class)))
+            }
+    )
     @PutMapping
     public ResponseEntity<Void> addSheduleCourse(@RequestParam(name = "courseId") Long courseId, @Valid @RequestBody ScheduleRequestDTO scheduleRequestDTO) {
         this.courseService.addSchedules(courseId,scheduleRequestDTO);
