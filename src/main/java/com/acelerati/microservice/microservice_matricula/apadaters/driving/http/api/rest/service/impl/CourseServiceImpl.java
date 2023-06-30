@@ -29,4 +29,9 @@ public class CourseServiceImpl implements CourseService {
     public void addSchedules(Long courseId, ScheduleRequestDTO scheduleRequestDTO) {
         this.courseServicePort.assingSheduleToCourse(courseId,this.scheduleModelMapper.toModel(scheduleRequestDTO));
     }
+
+    @Override
+    public void addTeacherToCourse(Long courseId, Long teacherId) {
+        this.courseServicePort.assingTeacherToCourse(courseId,teacherId);
+    }
 }

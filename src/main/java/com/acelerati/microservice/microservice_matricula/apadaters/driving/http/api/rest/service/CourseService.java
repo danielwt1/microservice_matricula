@@ -9,4 +9,5 @@ public interface CourseService {
 
     void addSchedules(Long courseId, ScheduleRequestDTO scheduleRequestDTO);
 
+    void addTeacherToCourse(Long courseId, Long teacherId);
 }
