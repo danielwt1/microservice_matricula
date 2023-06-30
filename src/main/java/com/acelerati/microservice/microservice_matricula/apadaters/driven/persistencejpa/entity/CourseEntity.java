@@ -30,9 +30,9 @@ public class CourseEntity {
     @Column(name = "grupo")
     private String group;
     private  String state;
+
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private List<ScheduleEntity> schedules = new ArrayList<>();
-
     public CourseEntity() {
     }
 
@@ -44,6 +44,11 @@ public class CourseEntity {
         this.group = group;
         this.state = state;
         this.schedules = schedules;
+    }
+
+    public void addSchedule(ScheduleEntity schedule){
+        this.schedules.add(schedule);
+        schedule.setCourse(this);
     }
 
     public Long getIdCourse() {
