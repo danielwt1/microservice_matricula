@@ -1,5 +1,6 @@
 package com.acelerati.microservice.microservice_matricula.domain.usecase;
 
+import com.acelerati.microservice.microservice_matricula.domain.exception.CourseException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.CourseUniqueGroupSemesterException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.DateTimeException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.MaxTimeTablesException;
@@ -13,21 +14,25 @@ import com.acelerati.microservice.microservice_matricula.domain.ports.api.Course
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicSemesterPersistencePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicaServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.CoursePersistencePort;
+import com.acelerati.microservice.microservice_matricula.domain.ports.spi.UserServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.util.DomainUtilsMethods;
 
 
 public class CourseUseCase implements CourseServicePort {
     private static final Long HOUR_MIN_TIME = 1L;
     private static final Long HOUR_MAX_TIME = 4L;
-        private static final Long WEEKS_SEMESTER_DURATION = 18L;
+    private static final Integer TYPE_ROLE_USER_TEACHER = 3 ;
+    private static final Long WEEKS_SEMESTER_DURATION = 18L;
     private final CoursePersistencePort coursePersistencePort;
     private final AcademicSemesterPersistencePort academicSemesterPersistencePort;
     private final AcademicaServiceFeingPort academicaServiceFeingPort;
+    private final UserServiceFeingPort userServiceFeingPort;
 
-    public CourseUseCase(CoursePersistencePort coursePersistencePort, AcademicSemesterPersistencePort academicSemesterPersistencePort, AcademicaServiceFeingPort academicaServiceFeingPort) {
+    public CourseUseCase(CoursePersistencePort coursePersistencePort, AcademicSemesterPersistencePort academicSemesterPersistencePort, AcademicaServiceFeingPort academicaServiceFeingPort, UserServiceFeingPort userServiceFeingPort) {
         this.coursePersistencePort = coursePersistencePort;
         this.academicSemesterPersistencePort = academicSemesterPersistencePort;
         this.academicaServiceFeingPort = academicaServiceFeingPort;
+        this.userServiceFeingPort = userServiceFeingPort;
     }
 
     @Override
@@ -66,6 +71,20 @@ public class CourseUseCase implements CourseServicePort {
         }
         course.getSchedules().add(scheduleModel);
         this.coursePersistencePort.addScheduleToCourse(course);
+    }
+    @Override
+    public void assingTeacherToCourse(Long courseId, Long teacherId) {
+        if(!this.userServiceFeingPort.existUserTeacher(courseId,teacherId)){
+            throw new ResourceNotFoundException(String.format("el Profesor con id %d no existe", teacherId));
+        }
+
+        CourseModel course = this.coursePersistencePort.findCourseById(courseId)
+                .orElseThrow(()-> new ResourceNotFoundException(String.format("El curso con id %d no existe", courseId)));
+        if(this.coursePersistencePort.getCoursesByIdTeacher(teacherId).size()>=4){
+            throw new CourseException("El profesor ya tiene 4 cursos");
+        }
+        course.setIdProfessor(teacherId);
+        this.coursePersistencePort.updateCourse(course);
     }
 
 

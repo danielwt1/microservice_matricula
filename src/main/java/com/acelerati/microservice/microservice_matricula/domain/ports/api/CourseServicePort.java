@@ -7,4 +7,7 @@ public interface CourseServicePort {
 
     void createCourse(CourseModel course);
     void assingSheduleToCourse(Long courseId, ScheduleModel scheduleModel);
+
+    void assingTeacherToCourse(Long courseId, Long teacherId);
+
 }

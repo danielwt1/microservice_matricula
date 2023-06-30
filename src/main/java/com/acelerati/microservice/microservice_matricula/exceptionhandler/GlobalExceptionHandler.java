@@ -1,6 +1,7 @@
 package com.acelerati.microservice.microservice_matricula.exceptionhandler;
 
 import com.acelerati.microservice.microservice_matricula.domain.exception.CourseUniqueGroupSemesterException;
+import com.acelerati.microservice.microservice_matricula.domain.exception.DateTimeException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.MaxTimeTablesException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.ResourceNotFoundException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.TimeInvalidExeption;
@@ -24,6 +25,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(),ex.getMessage(),request.getDescription(false));
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(DateTimeException.class)
+    public ResponseEntity<ErrorDetails> handleDateTimeException(DateTimeException ex, WebRequest request){
+        ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(),ex.getMessage(),request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(CourseUniqueGroupSemesterException.class)

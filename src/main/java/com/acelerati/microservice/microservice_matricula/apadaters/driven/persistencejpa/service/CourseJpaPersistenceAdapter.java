@@ -6,7 +6,9 @@ import com.acelerati.microservice.microservice_matricula.apadaters.driven.persis
 import com.acelerati.microservice.microservice_matricula.domain.model.CourseModel;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.CoursePersistencePort;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CourseJpaPersistenceAdapter implements CoursePersistencePort {
     private final CourseRepository courseJpaRepository;
@@ -30,6 +32,18 @@ public class CourseJpaPersistenceAdapter implements CoursePersistencePort {
     @Override
     public void createCourse(CourseModel course) {
         this.courseJpaRepository.save(this.courseEntityMapper.toEntity(course));
+    }
+
+    @Override
+    public void updateCourse(CourseModel course) {
+        this.courseJpaRepository.save(this.courseEntityMapper.toEntity(course));
+    }
+
+    @Override
+    public List<CourseModel> getCoursesByIdTeacher(Long idTeacher) {
+        return this.courseJpaRepository.findAllByIdProfessor(idTeacher)
+                .stream().map(this.courseEntityMapper::toModel)
+                .collect(Collectors.toList());
     }
 
     @Override
