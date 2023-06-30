@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/courses")
+@Tag(name = "Course", description = "Reresenta los endpoint para manejar los cursos")
 public class CourseController {
     private final CourseService courseService;
 
@@ -63,6 +65,25 @@ public class CourseController {
     @PutMapping
     public ResponseEntity<Void> addSheduleCourse(@RequestParam(name = "courseId") Long courseId, @Valid @RequestBody ScheduleRequestDTO scheduleRequestDTO) {
         this.courseService.addSchedules(courseId,scheduleRequestDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @Operation(summary = "Permite asignar un Profesor a un curso",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Se asigno profesor al curso"),
+                    @ApiResponse(responseCode = "400", description = "Hay un error en el request de la solicitud",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class))),
+                    @ApiResponse(responseCode = "500", description = "A business logic error occurred",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class))),
+                    @ApiResponse(responseCode = "401", description = "El usario no esta authenticado, o el token esta incorrecto ",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class)))
+            }
+    )
+    @PutMapping("/Teacher/asignar/")
+    public ResponseEntity<Void> assingTeacherToCourse(@RequestParam(name = "courseId") Long courseId, @RequestParam(name = "teacherId") Long teacherId) {
+        this.courseService.addTeacherToCourse(courseId,teacherId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
