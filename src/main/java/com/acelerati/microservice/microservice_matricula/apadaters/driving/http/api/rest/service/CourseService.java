@@ -2,6 +2,10 @@ package com.acelerati.microservice.microservice_matricula.apadaters.driving.http
 
 import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.request.CourseRequestDTO;
 import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.request.ScheduleRequestDTO;
+import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.response.CourseResponseDTO;
+import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.response.PaginationResponseDTO;
+
+import java.util.List;
 
 public interface CourseService {
 
@@ -10,4 +14,6 @@ public interface CourseService {
     void addSchedules(Long courseId, ScheduleRequestDTO scheduleRequestDTO);
 
     void addTeacherToCourse(Long courseId, Long teacherId);
+
+    PaginationResponseDTO<List<CourseResponseDTO>> getcourses(Long idTeacher, int page, int size, String sort);
 }
