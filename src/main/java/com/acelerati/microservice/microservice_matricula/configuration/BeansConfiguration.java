@@ -6,14 +6,18 @@ import com.acelerati.microservice.microservice_matricula.apadaters.driven.feinga
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.feingadapter.service.UserFeingAdapter;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.mappers.entity.AcademicSemesterEntityMapper;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.mappers.entity.CourseEntityMapper;
+import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.mappers.entity.HomeWorkEntityMapper;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.AcademicSemesterRepository;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.CourseRepository;
+import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.HomeWorkRepository;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.service.AcademicSemesterJpaPersistenceAdapter;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.service.CourseJpaPersistenceAdapter;
+import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.service.HomeWorkJpaPersistenceAdapter;
 import com.acelerati.microservice.microservice_matricula.domain.ports.api.CourseServicePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicSemesterPersistencePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicaServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.CoursePersistencePort;
+import com.acelerati.microservice.microservice_matricula.domain.ports.spi.HomeWorkPersistencePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.UserServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.usecase.CourseUseCase;
 import org.springframework.context.annotation.Bean;
@@ -29,14 +33,18 @@ public class BeansConfiguration {
     private final AcademicSemesterEntityMapper academicSemesterEntityMapper;
     private final AcademiaFeingClient  academiaFeingClient;
     private final UserFeingClient userFeingClient;
+    private final HomeWorkRepository homeWorkRepository;
+    private final HomeWorkEntityMapper homeWorkEntityMapper;
 
-    public BeansConfiguration(CourseRepository courseJpaRepository, CourseEntityMapper courseEntityMapper, AcademicSemesterRepository academicSemesterRepository, AcademicSemesterEntityMapper academicSemesterEntityMapper, AcademiaFeingClient academiaFeingClient, UserFeingClient userFeingClient) {
+    public BeansConfiguration(CourseRepository courseJpaRepository, CourseEntityMapper courseEntityMapper, AcademicSemesterRepository academicSemesterRepository, AcademicSemesterEntityMapper academicSemesterEntityMapper, AcademiaFeingClient academiaFeingClient, UserFeingClient userFeingClient, HomeWorkRepository homeWorkRepository, HomeWorkEntityMapper homeWorkEntityMapper) {
         this.courseJpaRepository = courseJpaRepository;
         this.courseEntityMapper = courseEntityMapper;
         this.academicSemesterRepository = academicSemesterRepository;
         this.academicSemesterEntityMapper = academicSemesterEntityMapper;
         this.academiaFeingClient = academiaFeingClient;
         this.userFeingClient = userFeingClient;
+        this.homeWorkRepository = homeWorkRepository;
+        this.homeWorkEntityMapper = homeWorkEntityMapper;
     }
 
     @Bean
@@ -55,8 +63,18 @@ public class BeansConfiguration {
     public UserServiceFeingPort getUserServiceFeingPort() {
         return new UserFeingAdapter(userFeingClient);
     }
+
+    @Bean
+    public HomeWorkPersistencePort  getHomeWorkPersistencePort() {
+        return new HomeWorkJpaPersistenceAdapter(homeWorkRepository, homeWorkEntityMapper);
+    }
+
     @Bean
     public CourseServicePort getCourseServicePort() {
-        return new CourseUseCase(getCoursePersistencePort(), getAcademicSemesterPersistencePort(),getAcademicaServiceFeingPort(),getUserServiceFeingPort());
+        return new CourseUseCase(getCoursePersistencePort(),
+                getAcademicSemesterPersistencePort(),
+                getAcademicaServiceFeingPort(),
+                getUserServiceFeingPort(),
+                getHomeWorkPersistencePort());
     }
 }

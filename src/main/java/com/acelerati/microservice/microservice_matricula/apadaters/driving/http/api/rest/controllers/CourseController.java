@@ -1,6 +1,7 @@
 package com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.controllers;
 
 import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.request.CourseRequestDTO;
+import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.request.HomeWorkRequestDTO;
 import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.request.ScheduleRequestDTO;
 import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.response.CourseResponseDTO;
 import com.acelerati.microservice.microservice_matricula.apadaters.driving.http.api.rest.dto.response.PaginationResponseDTO;
@@ -84,6 +85,27 @@ public class CourseController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Permite crear una tarea a un curso en estado EN CURSO",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Se creo una tarea a un  curso correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Hay un error en el request de la solicitud",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class))),
+                    @ApiResponse(responseCode = "500", description = "A business logic error occurred",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class))),
+                    @ApiResponse(responseCode = "401", description = "El usario no esta authenticado, o el token esta incorrecto ",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(type = "object", implementation = ErrorDetails.class)))
+            }
+    )
+    @PostMapping("/create/homework")
+    public ResponseEntity<Void> addHomeWorkCourse(@Parameter(description = "Id del curso")
+                                                 @RequestParam(name = "courseId") Long courseId, @Valid @RequestBody HomeWorkRequestDTO homework) {
+        this.courseService.addHomeworkToCourse(courseId, homework);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @Operation(summary = "Permite Agregar un horario al curso ",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Se Agrego el horario a  un curso correctamente"),
@@ -99,7 +121,7 @@ public class CourseController {
             }
     )
     @PutMapping
-    public ResponseEntity<Void> addSheduleCourse(@Parameter(description = "Id del curso", required = true)
+    public ResponseEntity<Void> addSheduleCourse(@Parameter(description = "Id del curso")
                                                  @RequestParam(name = "courseId") Long courseId, @Valid @RequestBody ScheduleRequestDTO scheduleRequestDTO) {
         this.courseService.addSchedules(courseId, scheduleRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -120,9 +142,9 @@ public class CourseController {
             }
     )
     @PutMapping("/Teacher/asignar/")
-    public ResponseEntity<Void> assingTeacherToCourse(@Parameter(description = "Id del curso", required = true)
+    public ResponseEntity<Void> assingTeacherToCourse(@Parameter(description = "Id del curso")
                                                       @RequestParam(name = "courseId") Long courseId,
-                                                      @Parameter(description = "Id del profesor", required = true)
+                                                      @Parameter(description = "Id del profesor")
                                                       @RequestParam(name = "teacherId") Long teacherId) {
         this.courseService.addTeacherToCourse(courseId, teacherId);
         return new ResponseEntity<>(HttpStatus.OK);
