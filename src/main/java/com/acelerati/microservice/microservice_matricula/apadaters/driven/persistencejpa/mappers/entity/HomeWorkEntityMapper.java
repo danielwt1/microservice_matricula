@@ -7,8 +7,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = org.mapstruct.ReportingPolicy.IGNORE, unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE)
 public interface HomeWorkEntityMapper {
-@Mapping(target = "course",ignore = true)
-    HomeWorkModel toModel(HomeWorkEntity entity);
-    @Mapping(target = "course",ignore = true)
+    @Mapping(target = "course", ignore = true)
     HomeWorkEntity toEntity(HomeWorkModel model);
+
+    @Mapping(target = "course", ignore = true)
+    HomeWorkModel toModel(HomeWorkEntity entity);
+
 }

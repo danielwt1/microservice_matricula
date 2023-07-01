@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Schema(description = "DTO para solicitud de tarea ára agragarla al curso",name = "HomeWorkRequestDTO")
 public class HomeWorkRequestDTO {
     @NotNull
-    @Size(min = 10,max = 300)
+    @Size(min = 100,max = 300)
     @Schema(description = "Descripción de la tarea",
             example = "Tarea de prueba para agregarla al curso de microservicios de matricula  carga la tarea el espacio minimo es 100 caracteres adada")
     private String descripcion;

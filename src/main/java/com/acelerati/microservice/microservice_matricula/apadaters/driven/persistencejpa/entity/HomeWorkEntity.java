@@ -40,7 +40,8 @@ public class HomeWorkEntity {
         return curso;
     }
 
-    public void setCourse(CourseEntity course) {
+    public void setCourse(CourseEntity course)
+    {
         this.curso = course;
     }
 
