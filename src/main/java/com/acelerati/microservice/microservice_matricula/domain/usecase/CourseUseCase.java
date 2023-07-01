@@ -17,11 +17,13 @@ import com.acelerati.microservice.microservice_matricula.domain.ports.spi.Course
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.UserServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.util.DomainUtilsMethods;
 
+import java.util.List;
+
 
 public class CourseUseCase implements CourseServicePort {
     private static final Long HOUR_MIN_TIME = 1L;
     private static final Long HOUR_MAX_TIME = 4L;
-    private static final Integer TYPE_ROLE_USER_TEACHER = 3 ;
+    private static final Long TYPE_ROLE_USER_TEACHER = 3L ;
     private static final Long WEEKS_SEMESTER_DURATION = 18L;
     private final CoursePersistencePort coursePersistencePort;
     private final AcademicSemesterPersistencePort academicSemesterPersistencePort;
@@ -74,7 +76,7 @@ public class CourseUseCase implements CourseServicePort {
     }
     @Override
     public void assingTeacherToCourse(Long courseId, Long teacherId) {
-        if(!this.userServiceFeingPort.existUserTeacher(courseId,teacherId)){
+        if(!this.userServiceFeingPort.existUserTeacher(teacherId,TYPE_ROLE_USER_TEACHER)){
             throw new ResourceNotFoundException(String.format("el Profesor con id %d no existe", teacherId));
         }
 
@@ -87,5 +89,11 @@ public class CourseUseCase implements CourseServicePort {
         this.coursePersistencePort.updateCourse(course);
     }
 
-
+    @Override
+    public List<CourseModel> findCoursesByIdTeacherandState(Long idTeacher, int page, int elementPerPage, String ascOrDesc) {
+        if(!this.userServiceFeingPort.existUserTeacher(idTeacher,TYPE_ROLE_USER_TEACHER)){
+            throw new ResourceNotFoundException(String.format("el usuario con id %d no existe o no es un profesor", idTeacher));
+        }
+        return this.coursePersistencePort.getCourses(idTeacher,page,elementPerPage,ascOrDesc);
+    }
 }

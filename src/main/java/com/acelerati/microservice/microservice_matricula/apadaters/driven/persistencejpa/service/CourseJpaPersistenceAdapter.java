@@ -1,11 +1,18 @@
 package com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.service;
 
+import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.entity.CourseEntity;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.mappers.entity.CourseEntityMapper;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.mappers.entity.CycleAvoidingMappingContext;
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.CourseRepository;
 import com.acelerati.microservice.microservice_matricula.domain.model.CourseModel;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.CoursePersistencePort;
+import com.acelerati.microservice.microservice_matricula.exceptionhandler.GlobalExceptionHandler;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import javax.persistence.GenerationType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +47,7 @@ public class CourseJpaPersistenceAdapter implements CoursePersistencePort {
     }
 
     @Override
-    public List<CourseModel> getCoursesByIdTeacher(Long idTeacher) {
+    public List<CourseModel> getCoursesByIdTeacher(Long idTeacher){
         return this.courseJpaRepository.findAllByIdProfessor(idTeacher)
                 .stream().map(this.courseEntityMapper::toModel)
                 .collect(Collectors.toList());
@@ -49,5 +56,13 @@ public class CourseJpaPersistenceAdapter implements CoursePersistencePort {
     @Override
     public boolean existCourse(String group,Long idMateria,String state) {
         return this.courseJpaRepository.existsByGroupAndIdMateriaAndState(group,idMateria,state);
+    }
+
+    @Override
+    public List<CourseModel> getCourses(Long idTeacher, int page, int elementPerPage, String ascOrDesc) {
+            Sort.Direction sort = ascOrDesc.equals("ASC") ? Sort.Direction.ASC:Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page,elementPerPage, Sort.by(sort,"state"));
+        Page<CourseEntity> courseEntities = this.courseJpaRepository.findAllByIdProfessor(idTeacher,pageable);
+        return courseEntities.getContent().stream().map(this.courseEntityMapper::toModel).collect(Collectors.toList());
     }
 }
