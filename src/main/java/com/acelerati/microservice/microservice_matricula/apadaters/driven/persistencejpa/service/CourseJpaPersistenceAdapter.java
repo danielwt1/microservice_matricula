@@ -6,13 +6,11 @@ import com.acelerati.microservice.microservice_matricula.apadaters.driven.persis
 import com.acelerati.microservice.microservice_matricula.apadaters.driven.persistencejpa.repository.CourseRepository;
 import com.acelerati.microservice.microservice_matricula.domain.model.CourseModel;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.CoursePersistencePort;
-import com.acelerati.microservice.microservice_matricula.exceptionhandler.GlobalExceptionHandler;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import javax.persistence.GenerationType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

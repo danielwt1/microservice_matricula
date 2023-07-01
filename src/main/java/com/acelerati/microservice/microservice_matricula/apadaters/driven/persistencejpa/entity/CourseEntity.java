@@ -14,7 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "curso")
@@ -29,14 +31,17 @@ public class CourseEntity {
     private AcademicSemesterEntity idAcademicSemester;
     @Column(name = "grupo")
     private String group;
-    private  String state;
-
-    @OneToMany(mappedBy = "course",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
+    private String state;
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ScheduleEntity> schedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<HomeWorkEntity> homeworks = new HashSet<>();
+
     public CourseEntity() {
     }
 
-    public CourseEntity(Long idCourse, Long idMateria, Long idProfessor, AcademicSemesterEntity idAcademicSemester, String group, String state, List<ScheduleEntity> schedules) {
+    public CourseEntity(Long idCourse, Long idMateria, Long idProfessor, AcademicSemesterEntity idAcademicSemester, String group, String state, List<ScheduleEntity> schedules, Set<HomeWorkEntity> homeworks) {
         this.idCourse = idCourse;
         this.idMateria = idMateria;
         this.idProfessor = idProfessor;
@@ -44,11 +49,17 @@ public class CourseEntity {
         this.group = group;
         this.state = state;
         this.schedules = schedules;
+        this.homeworks = homeworks;
     }
 
-    public void addSchedule(ScheduleEntity schedule){
+    public void addSchedule(ScheduleEntity schedule) {
         this.schedules.add(schedule);
         schedule.setCourse(this);
+    }
+
+    public void addHomework(HomeWorkEntity homeWork) {
+        this.homeworks.add(homeWork);
+        homeWork.setCourse(this);
     }
 
     public Long getIdCourse() {
@@ -105,5 +116,13 @@ public class CourseEntity {
 
     public void setSchedules(List<ScheduleEntity> schedules) {
         this.schedules = schedules;
+    }
+
+    public Set<HomeWorkEntity> getHomeworks() {
+        return homeworks;
+    }
+
+    public void setHomeworks(Set<HomeWorkEntity> homeworks) {
+        this.homeworks = homeworks;
     }
 }

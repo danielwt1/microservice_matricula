@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy;
 //Para mapear bidireaccional se añade 1. que use el mapper de la otra entidad que genera el codigo, para que no lo regenere aca
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, unmappedSourcePolicy = ReportingPolicy.IGNORE,
         collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED,
-        uses = {ScheduleEntityMapper.class, AcademicSemesterEntityMapper.class})
+        uses = {ScheduleEntityMapper.class, AcademicSemesterEntityMapper.class,HomeWorkEntityMapper.class})
 public interface CourseEntityMapper {
     CourseEntity toEntityBidi(CourseModel courseModel, @Context CycleAvoidingMappingContext cycleAvoidingMappingContext);
 

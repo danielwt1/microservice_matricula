@@ -1,7 +1,9 @@
 package com.acelerati.microservice.microservice_matricula.domain.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CourseModel {
     private Long idCourse;
@@ -11,11 +13,11 @@ public class CourseModel {
     private String group;
     private  String state;
     private List<ScheduleModel> schedules =  new ArrayList<>();
-
+    private Set<HomeWorkModel> homeworks =  new HashSet<>();
     public CourseModel() {
     }
 
-    public CourseModel(Long idCourse, Long idMateria, Long idProfessor, AcademicSemesterModel idAcademicSemester, String group, String state, List<ScheduleModel> schedules) {
+    public CourseModel(Long idCourse, Long idMateria, Long idProfessor, AcademicSemesterModel idAcademicSemester, String group, String state, List<ScheduleModel> schedules, Set<HomeWorkModel> homeworks) {
         this.idCourse = idCourse;
         this.idMateria = idMateria;
         this.idProfessor = idProfessor;
@@ -23,6 +25,7 @@ public class CourseModel {
         this.group = group;
         this.state = state;
         this.schedules = schedules;
+        this.homeworks = homeworks;
     }
 
     public Long getIdCourse() {
@@ -79,5 +82,13 @@ public class CourseModel {
 
     public void setSchedules(List<ScheduleModel> schedules) {
         this.schedules = schedules;
+    }
+
+    public Set<HomeWorkModel> getHomeworks() {
+        return homeworks;
+    }
+
+    public void setHomeworks(Set<HomeWorkModel> homeworks) {
+        this.homeworks = homeworks;
     }
 }

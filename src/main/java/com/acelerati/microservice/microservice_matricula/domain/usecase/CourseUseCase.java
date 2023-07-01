@@ -3,17 +3,20 @@ package com.acelerati.microservice.microservice_matricula.domain.usecase;
 import com.acelerati.microservice.microservice_matricula.domain.exception.CourseException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.CourseUniqueGroupSemesterException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.DateTimeException;
+import com.acelerati.microservice.microservice_matricula.domain.exception.MaxHomeWorksCourseException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.MaxTimeTablesException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.ResourceNotFoundException;
 import com.acelerati.microservice.microservice_matricula.domain.exception.TimeInvalidExeption;
 import com.acelerati.microservice.microservice_matricula.domain.model.AcademicSemesterModel;
 import com.acelerati.microservice.microservice_matricula.domain.model.CourseModel;
+import com.acelerati.microservice.microservice_matricula.domain.model.HomeWorkModel;
 import com.acelerati.microservice.microservice_matricula.domain.model.ScheduleModel;
 import com.acelerati.microservice.microservice_matricula.domain.model.enums.TypeCourseEnum;
 import com.acelerati.microservice.microservice_matricula.domain.ports.api.CourseServicePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicSemesterPersistencePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.AcademicaServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.CoursePersistencePort;
+import com.acelerati.microservice.microservice_matricula.domain.ports.spi.HomeWorkPersistencePort;
 import com.acelerati.microservice.microservice_matricula.domain.ports.spi.UserServiceFeingPort;
 import com.acelerati.microservice.microservice_matricula.domain.util.DomainUtilsMethods;
 
@@ -30,11 +33,14 @@ public class CourseUseCase implements CourseServicePort {
     private final AcademicaServiceFeingPort academicaServiceFeingPort;
     private final UserServiceFeingPort userServiceFeingPort;
 
-    public CourseUseCase(CoursePersistencePort coursePersistencePort, AcademicSemesterPersistencePort academicSemesterPersistencePort, AcademicaServiceFeingPort academicaServiceFeingPort, UserServiceFeingPort userServiceFeingPort) {
+    private final HomeWorkPersistencePort homeWorkPersistencePort;
+
+    public CourseUseCase(CoursePersistencePort coursePersistencePort, AcademicSemesterPersistencePort academicSemesterPersistencePort, AcademicaServiceFeingPort academicaServiceFeingPort, UserServiceFeingPort userServiceFeingPort, HomeWorkPersistencePort homeWorkPersistencePort) {
         this.coursePersistencePort = coursePersistencePort;
         this.academicSemesterPersistencePort = academicSemesterPersistencePort;
         this.academicaServiceFeingPort = academicaServiceFeingPort;
         this.userServiceFeingPort = userServiceFeingPort;
+        this.homeWorkPersistencePort = homeWorkPersistencePort;
     }
 
     @Override
@@ -95,5 +101,20 @@ public class CourseUseCase implements CourseServicePort {
             throw new ResourceNotFoundException(String.format("el usuario con id %d no existe o no es un profesor", idTeacher));
         }
         return this.coursePersistencePort.getCourses(idTeacher,page,elementPerPage,ascOrDesc);
+    }
+
+    @Override
+    public void createHomeworkToCourse(Long courseId, HomeWorkModel homework) {
+        CourseModel course = this.coursePersistencePort.findCourseById(courseId)
+                .orElseThrow(()-> new ResourceNotFoundException(String.format("El curso con id %d no existe", courseId)));
+        if(course.getHomeworks().size() == 3){
+            throw new MaxHomeWorksCourseException("El curso ya tiene 3 tareas");
+        }
+        if(!course.getState().equals(TypeCourseEnum.EN_CURSO.getDescription())){
+            throw new CourseException("El curso no esta en curso");
+        }
+        homework.setCourse(course);
+
+        this.homeWorkPersistencePort.createHomeWork(homework);
     }
 }
