@@ -83,9 +83,8 @@ public class CourseUseCase implements CourseServicePort {
     @Override
     public void assingTeacherToCourse(Long courseId, Long teacherId) {
         if(!this.userServiceFeingPort.existUserTeacher(teacherId,TYPE_ROLE_USER_TEACHER)){
-            throw new ResourceNotFoundException(String.format("el Profesor con id %d no existe", teacherId));
+            throw new ResourceNotFoundException(String.format("el usuario con id %d no existe o no es un profesor", teacherId));
         }
-
         CourseModel course = this.coursePersistencePort.findCourseById(courseId)
                 .orElseThrow(()-> new ResourceNotFoundException(String.format("El curso con id %d no existe", courseId)));
         if(this.coursePersistencePort.getCoursesByIdTeacher(teacherId).size()>=4){

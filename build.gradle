@@ -38,6 +38,8 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    //Para mock statci resources
+    testImplementation('org.mockito:mockito-inline:5.2.0')
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
@@ -60,7 +62,9 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    //"com/acelerati/",
+                    "com/acelerati/microservice/microservice_matricula/configuration/*",
+                    "**/microservice_matricula/adapters/driven/*",
+                    "**/exceptionhandler/*",
 
             ])
         }))
