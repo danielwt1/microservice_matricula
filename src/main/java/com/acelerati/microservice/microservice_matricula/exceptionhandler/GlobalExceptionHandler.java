@@ -9,6 +9,7 @@ import com.acelerati.microservice.microservice_matricula.exceptionhandler.respon
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -25,6 +27,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorDetails errorDetails = new ErrorDetails(LocalDate.now(),ex.getMessage(),request.getDescription(false));
 
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDetails> handleAccessDeniedException(AccessDeniedException exception, WebRequest request){
+        String message = String.format("%s, %s",exception.getMessage(),"the user haven't the permission necessary that realize this action");
+
+        ErrorDetails res = new ErrorDetails(LocalDate.now(), message, request.getDescription(false));
+
+        return new ResponseEntity<>(res, HttpStatus.FORBIDDEN);
     }
     @ExceptionHandler(DateTimeException.class)
     public ResponseEntity<ErrorDetails> handleDateTimeException(DateTimeException ex, WebRequest request){
