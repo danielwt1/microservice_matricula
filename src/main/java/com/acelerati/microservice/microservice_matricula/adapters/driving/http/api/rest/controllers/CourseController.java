@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,7 +56,7 @@ public class CourseController {
     )
     @PreAuthorize("@authService.checkProfesorRole(@authService.rolesContext)")
     @GetMapping
-    public ResponseEntity<PaginationResponseDTO<List<CourseResponseDTO>>> getCoursesByTeacher(@Parameter(description = "Id del profesor", required = true)
+    public ResponseEntity<PaginationResponseDTO<List<CourseResponseDTO>>> getCoursesByTeacher(@RequestHeader(name = "user")String user,@Parameter(description = "Id del profesor", required = true)
                                                                                               @RequestParam(name = "idTeacher") Long idTeacher,
                                                                                               @Parameter(description = "Numero de pagina", required = false)
                                                                                               @RequestParam(name = "page", defaultValue = "0") Integer page,
@@ -81,9 +82,9 @@ public class CourseController {
                                     schema = @Schema(type = "object", implementation = ErrorDetails.class)))
             }
     )
-    @PreAuthorize("authService.checkDirectorProgramaRole(@authService.rolesContext)")
+    @PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
     @PostMapping
-    public ResponseEntity<Void> createCourse(@Valid @RequestBody CourseRequestDTO courseRequestDTO) {
+    public ResponseEntity<Void> createCourse(@RequestHeader(name = "user")String user,@Valid @RequestBody CourseRequestDTO courseRequestDTO) {
         this.courseService.createCourse(courseRequestDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -104,7 +105,7 @@ public class CourseController {
     )
     @PreAuthorize("@authService.checkProfesorRole(@authService.rolesContext)")
     @PostMapping("/create/homework")
-    public ResponseEntity<Void> addHomeWorkCourse(@Parameter(description = "Id del curso")
+    public ResponseEntity<Void> addHomeWorkCourse(@RequestHeader(name = "user")String user,@Parameter(description = "Id del curso")
                                                  @RequestParam(name = "courseId") Long courseId, @Valid @RequestBody HomeWorkRequestDTO homework) {
         this.courseService.addHomeworkToCourse(courseId, homework);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -126,7 +127,7 @@ public class CourseController {
     )
     @PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
     @PutMapping
-    public ResponseEntity<Void> addSheduleCourse(@Parameter(description = "Id del curso")
+    public ResponseEntity<Void> addSheduleCourse(@RequestHeader(name = "user")String user,@Parameter(description = "Id del curso")
                                                  @RequestParam(name = "courseId") Long courseId, @Valid @RequestBody ScheduleRequestDTO scheduleRequestDTO) {
         this.courseService.addSchedules(courseId, scheduleRequestDTO);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -148,7 +149,7 @@ public class CourseController {
     )
     @PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
     @PutMapping("/Teacher/asignar/")
-    public ResponseEntity<Void> assingTeacherToCourse(@Parameter(description = "Id del curso")
+    public ResponseEntity<Void> assingTeacherToCourse(@RequestHeader(name = "user")String user, @Parameter(description = "Id del curso")
                                                       @RequestParam(name = "courseId") Long courseId,
                                                       @Parameter(description = "Id del profesor")
                                                       @RequestParam(name = "teacherId") Long teacherId) {

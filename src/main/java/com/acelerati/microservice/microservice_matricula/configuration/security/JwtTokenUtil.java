@@ -40,7 +40,7 @@ public class JwtTokenUtil implements Serializable {
                         .filter(String.class::isInstance)
                         .map(String::valueOf)
 
-                        .map(role -> role.substring(5))
+                        //.map(role -> role.substring(5))
                         .collect(Collectors.toList());
 
             }

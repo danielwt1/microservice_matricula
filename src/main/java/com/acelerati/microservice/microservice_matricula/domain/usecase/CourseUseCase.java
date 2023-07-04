@@ -27,7 +27,7 @@ public class CourseUseCase implements CourseServicePort {
     private static final Long HOUR_MIN_TIME = 1L;
     private static final Long HOUR_MAX_TIME = 4L;
     private static final Long TYPE_ROLE_USER_TEACHER = 3L ;
-    private static final Long WEEKS_SEMESTER_DURATION = 18L;
+    private static final Long WEEKS_SEMESTER_DURATION = 16L;
     private final CoursePersistencePort coursePersistencePort;
     private final AcademicSemesterPersistencePort academicSemesterPersistencePort;
     private final AcademicaServiceFeingPort academicaServiceFeingPort;
