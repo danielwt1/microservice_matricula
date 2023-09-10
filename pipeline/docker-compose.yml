@@ -1,0 +1,38 @@
+#se le especifica la version
+version: "3.9"
+#nombres de contenedores a usar
+services:
+  app_matricula:
+    environment:
+      - database_url=jdbc:mysql://microservice_matricula-contenedor_mysql_service_matricula-1:3306/matricula
+      - database_username=root
+      - database_password=mysql
+      - url_academia=localhost:8081
+      - url_user=localhost:8080
+    #le in
+    build: ./pipeline/
+    image: micro_matricula:1.0
+    ports:
+      - "8098:8098"
+    links:
+      - contenedor_mysql_service_matricula
+    #Para decirle que la aplicacion depende del contenedor de BD
+    depends_on:
+      - contenedor_mysql_service_matricula
+    volumes:
+      - logs-app
+  contenedor_mysql_service_matricula:
+    image: mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_DATABASE=matricula
+    #vOLUMEN QUE VA A USAR SOLO ESTE CONTENEDOR tienen que estar definidos  en la raiz de volumes:  .........
+    volumes:
+      #Ver donde se guardan los datos logs, etc  mysql /var/lib/mysql ---
+      - mysql-data:/var/lib/mysql
+      #DEFINE VOLUMENES que van a usar los contenedores
+volumes:
+  mysql-data:
+  logs-app:
