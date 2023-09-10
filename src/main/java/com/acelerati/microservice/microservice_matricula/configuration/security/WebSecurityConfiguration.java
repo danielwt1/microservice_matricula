@@ -36,7 +36,7 @@ public class WebSecurityConfiguration {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests().antMatchers("/swagger-ui/**").permitAll().antMatchers("/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)

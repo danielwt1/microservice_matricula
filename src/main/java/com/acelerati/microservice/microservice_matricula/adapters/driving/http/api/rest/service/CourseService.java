@@ -2,8 +2,8 @@ package com.acelerati.microservice.microservice_matricula.adapters.driving.http.
 
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.CourseRequestDTO;
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.HomeWorkRequestDTO;
-import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.ScheduleRequestDTO;
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.response.CourseResponseDTO;
+import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.ScheduleRequestDTO;
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.response.PaginationResponseDTO;
 
 import java.util.List;

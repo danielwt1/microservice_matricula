@@ -2,10 +2,10 @@ package com.acelerati.microservice.microservice_matricula.adapters.driving.http.
 
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.CourseRequestDTO;
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.HomeWorkRequestDTO;
-import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.ScheduleRequestDTO;
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.response.CourseResponseDTO;
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.response.PaginationResponseDTO;
 import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.service.CourseService;
+import com.acelerati.microservice.microservice_matricula.adapters.driving.http.api.rest.dto.request.ScheduleRequestDTO;
 import com.acelerati.microservice.microservice_matricula.exceptionhandler.response.ErrorDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -54,9 +53,9 @@ public class CourseController {
                                     schema = @Schema(type = "object", implementation = ErrorDetails.class)))
             }
     )
-    @PreAuthorize("@authService.checkProfesorRole(@authService.rolesContext)")
+    //@PreAuthorize("@authService.checkProfesorRole(@authService.rolesContext)")
     @GetMapping
-    public ResponseEntity<PaginationResponseDTO<List<CourseResponseDTO>>> getCoursesByTeacher(@RequestHeader(name = "user")String user,@Parameter(description = "Id del profesor", required = true)
+    public ResponseEntity<PaginationResponseDTO<List<CourseResponseDTO>>> getCoursesByTeacher(@RequestHeader(name = "user")String user, @Parameter(description = "Id del profesor", required = true)
                                                                                               @RequestParam(name = "idTeacher") Long idTeacher,
                                                                                               @Parameter(description = "Numero de pagina", required = false)
                                                                                               @RequestParam(name = "page", defaultValue = "0") Integer page,
@@ -82,7 +81,7 @@ public class CourseController {
                                     schema = @Schema(type = "object", implementation = ErrorDetails.class)))
             }
     )
-    @PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
+    //@PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
     @PostMapping
     public ResponseEntity<Void> createCourse(@RequestHeader(name = "user")String user,@Valid @RequestBody CourseRequestDTO courseRequestDTO) {
         this.courseService.createCourse(courseRequestDTO);
@@ -103,7 +102,7 @@ public class CourseController {
                                     schema = @Schema(type = "object", implementation = ErrorDetails.class)))
             }
     )
-    @PreAuthorize("@authService.checkProfesorRole(@authService.rolesContext)")
+    //@PreAuthorize("@authService.checkProfesorRole(@authService.rolesContext)")
     @PostMapping("/create/homework")
     public ResponseEntity<Void> addHomeWorkCourse(@RequestHeader(name = "user")String user,@Parameter(description = "Id del curso")
                                                  @RequestParam(name = "courseId") Long courseId, @Valid @RequestBody HomeWorkRequestDTO homework) {
@@ -125,7 +124,7 @@ public class CourseController {
                                     schema = @Schema(type = "object", implementation = ErrorDetails.class)))
             }
     )
-    @PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
+    //@PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
     @PutMapping
     public ResponseEntity<Void> addSheduleCourse(@RequestHeader(name = "user")String user,@Parameter(description = "Id del curso")
                                                  @RequestParam(name = "courseId") Long courseId, @Valid @RequestBody ScheduleRequestDTO scheduleRequestDTO) {
@@ -147,7 +146,7 @@ public class CourseController {
                                     schema = @Schema(type = "object", implementation = ErrorDetails.class)))
             }
     )
-    @PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
+    //@PreAuthorize("@authService.checkDirectorProgramaRole(@authService.rolesContext)")
     @PutMapping("/Teacher/asignar/")
     public ResponseEntity<Void> assingTeacherToCourse(@RequestHeader(name = "user")String user, @Parameter(description = "Id del curso")
                                                       @RequestParam(name = "courseId") Long courseId,
